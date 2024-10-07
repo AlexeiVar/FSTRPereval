@@ -15,12 +15,7 @@ class Coords(models.Model):
     height = models.IntegerField()
 
 
-class Images(models.Model):
-    date_added = models.DateField(auto_now_add=True)
-    img = models.BinaryField()
-
-
-class PerevalAdded(models.Model):
+class Pereval(models.Model):
     STATUSES = {
         'NE': 'новый',
         'PE': 'ожидается',
@@ -36,12 +31,12 @@ class PerevalAdded(models.Model):
     status = models.CharField(max_length=8, choices=STATUSES)
     level = models.ForeignKey(Level, on_delete=models.CASCADE)
     coords = models.ForeignKey(Coords, on_delete=models.CASCADE)
-    images = models.ManyToManyField(Images, through='PerevalImages')
 
 
-class PerevalImages(models.Model):
-    pereval = models.ForeignKey(PerevalAdded, on_delete=models.CASCADE)
-    image = models.ForeignKey(Images, on_delete=models.CASCADE)
+class Images(models.Model):
+    date_added = models.DateField(auto_now_add=True)
+    img = models.URLField()
+    pereval = models.ForeignKey(Pereval, on_delete=models.CASCADE)
 
 
 class CustomUser(AbstractUser):
