@@ -19,9 +19,13 @@ class UserAdmin(UserAdmin):
     )
 
 
-#admin.site.register(CustomUser, UserAdmin)
+
 
 admin.site.register(Level)
 admin.site.register(Coords)
 admin.site.register(Images)
-admin.site.register(Pereval)
+
+
+@admin.register(Pereval)
+class PerevalAdmin(admin.ModelAdmin):
+    readonly_fields = ('add_time',)

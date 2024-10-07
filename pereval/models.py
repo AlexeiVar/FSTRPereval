@@ -35,7 +35,7 @@ class Pereval(models.Model):
         'RE': 'отклонено'
     }
 
-    add_time = models.DateTimeField()
+    add_time = models.DateTimeField(auto_now_add=True)
     beauty_title = models.CharField(max_length=25)
     title = models.CharField(max_length=25)
     other_titles = models.CharField(max_length=25)
