@@ -1,3 +1,5 @@
+from drf_writable_nested import UniqueFieldsMixin, NestedUpdateMixin
+
 from .models import *
 from rest_framework import serializers
 from drf_writable_nested.serializers import WritableNestedModelSerializer
@@ -50,6 +52,7 @@ class PerevalSerializer(WritableNestedModelSerializer):
     images = ImagesSerializer(many=True)
     coords = CoordsSerializer()
     level = LevelSerializer()
+    user = UserSerializer()
     class Meta:
         model = Pereval
         fields = [
@@ -62,5 +65,6 @@ class PerevalSerializer(WritableNestedModelSerializer):
             'level',
             'coords',
             'images',
+            'user',
         ]
         read_only_fields = ['status',]
