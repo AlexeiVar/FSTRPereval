@@ -6,3 +6,6 @@ from .serializers import *
 from .models import *
 
 
+class PerevalViewset(viewsets.ModelViewSet):
+    queryset = Pereval.objects.all()
+    serializer_class = PerevalSerializer

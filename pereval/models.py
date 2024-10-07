@@ -3,10 +3,10 @@ from django.contrib.auth.models import AbstractUser
 
 
 class Level(models.Model):
-    winter = models.CharField(max_length=2)
-    summer = models.CharField(max_length=2)
-    autumn = models.CharField(max_length=2)
-    spring = models.CharField(max_length=2)
+    winter = models.CharField(max_length=2, blank=True)
+    summer = models.CharField(max_length=2, blank=True)
+    autumn = models.CharField(max_length=2, blank=True)
+    spring = models.CharField(max_length=2, blank=True)
 
 
 class Coords(models.Model):
@@ -23,20 +23,20 @@ class Pereval(models.Model):
         'RE': 'отклонено'
     }
 
-    add_time = models.DateField()
+    add_time = models.DateTimeField()
     beauty_title = models.CharField(max_length=25)
     title = models.CharField(max_length=25)
     other_titles = models.CharField(max_length=25)
-    connect = models.CharField(max_length=25)
-    status = models.CharField(max_length=8, choices=STATUSES)
+    connect = models.CharField(max_length=25, blank=True)
+    status = models.CharField(max_length=8, choices=STATUSES, default='NE')
     level = models.ForeignKey(Level, on_delete=models.CASCADE)
     coords = models.ForeignKey(Coords, on_delete=models.CASCADE)
 
 
 class Images(models.Model):
-    date_added = models.DateField(auto_now_add=True)
-    img = models.URLField()
-    pereval = models.ForeignKey(Pereval, on_delete=models.CASCADE)
+    data = models.CharField(max_length=320)
+    title = models.CharField(max_length=50)
+    pereval = models.ForeignKey(Pereval, on_delete=models.CASCADE, related_name='images')
 
 
 class CustomUser(AbstractUser):

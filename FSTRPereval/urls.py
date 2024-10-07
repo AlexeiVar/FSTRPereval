@@ -20,7 +20,7 @@ from rest_framework import routers
 from pereval import views
 
 router = routers.DefaultRouter()
-
+router.register(r'perevals', views.PerevalViewset)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
