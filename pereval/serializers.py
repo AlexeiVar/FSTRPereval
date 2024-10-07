@@ -1,8 +1,9 @@
 from drf_writable_nested import UniqueFieldsMixin, NestedUpdateMixin
 
 from .models import *
-from rest_framework import serializers
+from rest_framework import serializers, status
 from drf_writable_nested.serializers import WritableNestedModelSerializer
+from rest_framework.response import Response
 
 class LevelSerializer(serializers.ModelSerializer):
     class Meta:
@@ -45,7 +46,7 @@ class ImagesSerializer(serializers.ModelSerializer):
             'title',
             'pereval',
         ]
-        read_only_fields = ['pereval',]
+        read_only_fields = ['pereval', ]
 
 
 class PerevalSerializer(WritableNestedModelSerializer):
@@ -53,6 +54,7 @@ class PerevalSerializer(WritableNestedModelSerializer):
     coords = CoordsSerializer()
     level = LevelSerializer()
     user = UserSerializer()
+
     class Meta:
         model = Pereval
         fields = [
@@ -67,14 +69,18 @@ class PerevalSerializer(WritableNestedModelSerializer):
             'images',
             'user',
         ]
-        read_only_fields = ['status','add_time']
+        read_only_fields = ['status', 'add_time']
 
     def create(self, validated_data, **kwargs):
         level = validated_data.pop('level')
         coords = validated_data.pop('coords')
         images = validated_data.pop('images')
         user = validated_data.pop('user')
-        user, created = CustomUser.objects.get_or_create(**user)
+        # Этот get_or_create проверяет только почту, если такая есть то он не создаст юзера
+        # иначе он создаст юзера, помещая туда все данные из defaults
+        user, created = CustomUser.objects.get_or_create(email=user['email'], defaults={
+            'fam': user['fam'], 'name': user['name'], 'otc': user['otc'], 'phone': user['phone']
+        })
 
         level = Level.objects.create(**level)
         coords = Coords.objects.create(**coords)
@@ -86,4 +92,3 @@ class PerevalSerializer(WritableNestedModelSerializer):
             Images.objects.create(data=data, pereval=pereval, title=title)
 
         return pereval
-

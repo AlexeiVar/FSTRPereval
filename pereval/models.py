@@ -17,7 +17,7 @@ class Coords(models.Model):
     height = models.IntegerField()
 
 
-class CustomUser(AbstractUser):
+class CustomUser(models.Model):
     phone = models.CharField(max_length=16)
     fam = models.CharField(max_length=50)
     name = models.CharField(max_length=50)
@@ -43,7 +43,7 @@ class Pereval(models.Model):
     status = models.CharField(max_length=8, choices=STATUSES, default='NE')
     level = models.ForeignKey(Level, on_delete=models.CASCADE)
     coords = models.ForeignKey(Coords, on_delete=models.CASCADE)
-    user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, related_name='user')
+    user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True)
 
 
 class Images(models.Model):
