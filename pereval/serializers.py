@@ -5,6 +5,7 @@ from rest_framework import serializers, status
 from drf_writable_nested.serializers import WritableNestedModelSerializer
 from rest_framework.response import Response
 
+
 class LevelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Level

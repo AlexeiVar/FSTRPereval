@@ -2,8 +2,6 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 
 
-
-
 class Level(models.Model):
     winter = models.CharField(max_length=2, blank=True)
     summer = models.CharField(max_length=2, blank=True)
@@ -23,8 +21,6 @@ class CustomUser(models.Model):
     name = models.CharField(max_length=50)
     otc = models.CharField(max_length=50)
     email = models.EmailField()
-
-
 
 
 class Pereval(models.Model):
@@ -51,5 +47,3 @@ class Images(models.Model):
     data = models.CharField(max_length=320)
     title = models.CharField(max_length=50)
     pereval = models.ForeignKey(Pereval, on_delete=models.CASCADE, related_name='images')
-
-
