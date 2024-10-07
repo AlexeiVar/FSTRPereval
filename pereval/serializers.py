@@ -68,3 +68,22 @@ class PerevalSerializer(WritableNestedModelSerializer):
             'user',
         ]
         read_only_fields = ['status',]
+
+    def create(self, validated_data, **kwargs):
+        level = validated_data.pop('level')
+        coords = validated_data.pop('coords')
+        images = validated_data.pop('images')
+        user = validated_data.pop('user')
+        user, created = CustomUser.objects.get_or_create(**user)
+
+        level = Level.objects.create(**level)
+        coords = Coords.objects.create(**coords)
+        pereval = Pereval.objects.create(**validated_data, user=user, coords=coords, level=level)
+
+        for image in images:
+            data = image.pop('data')
+            title = image.pop('title')
+            Images.objects.create(data=data, pereval=pereval, title=title)
+
+        return pereval
+

@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 
 
+
+
 class Level(models.Model):
     winter = models.CharField(max_length=2, blank=True)
     summer = models.CharField(max_length=2, blank=True)
@@ -20,7 +22,9 @@ class CustomUser(AbstractUser):
     fam = models.CharField(max_length=50)
     name = models.CharField(max_length=50)
     otc = models.CharField(max_length=50)
-    email = models.EmailField(unique=True)
+    email = models.EmailField()
+
+
 
 
 class Pereval(models.Model):
@@ -43,6 +47,7 @@ class Pereval(models.Model):
 
 
 class Images(models.Model):
+    # Дата может быть urlfield, но данный json как пример использует просто строку
     data = models.CharField(max_length=320)
     title = models.CharField(max_length=50)
     pereval = models.ForeignKey(Pereval, on_delete=models.CASCADE, related_name='images')
