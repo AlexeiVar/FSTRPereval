@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # Наружные приложения
+    'rest_framework',
     # Внутренние приложения
     'pereval',
 ]

@@ -44,15 +44,6 @@ class PerevalImages(models.Model):
     image = models.ForeignKey(Images, on_delete=models.CASCADE)
 
 
-class PerevalAreas(models.Model):
-    id_parent = models.IntegerField()
-    title = models.TextField(max_length=100)
-
-
-class SprActivitiesTypes(models.Model):
-    title = models.CharField(max_length=10)
-
-
 class CustomUser(AbstractUser):
     phone = models.CharField(max_length=16)
     fam = models.CharField(max_length=50)
