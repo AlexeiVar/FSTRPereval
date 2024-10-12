@@ -44,12 +44,15 @@ class submitData(viewsets.ModelViewSet):
         level_instance.autumn = data['level']['autumn']
         level_instance.spring = data['level']['spring']
         # переопределяю поля координат
-
+        coords_instance.latitude = data['coords']['latitude']
+        coords_instance.longitude = data['coords']['longitude']
+        coords_instance.height = data['coords']['height']
         # переопределяю фотографии
 
         # Сохраняю изменения
         level_instance.save()
         coords_instance.save()
+        # У нас список, а не объект, поэтому сохраняем их по одному
         for image in images_instance:
             image.save()
         instance.save()
