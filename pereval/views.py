@@ -28,5 +28,25 @@ class submitData(viewsets.ModelViewSet):
         if not data['user'] == user_dict:
             response = {'state': 0, 'message': 'данные пользователя нельзя переопределить'}
             return Response(response)
+        level_instance = instance.level
+        coords_instance = instance.coords
+        images_instance = Images.objects.filter(pereval=instance.id)
         response = {'state': 1}
+
+        # переопределяю поля перевала
+        instance.beauty_title = data['beauty_title']
+        instance.title = data['title']
+        instance.other_titles = data['other_titles']
+        instance.connect = data['connect']
+        # переопределяю поля сложности
+
+        # переопределяю поля координат
+
+        # переопределяю фотографии
+
+        # Сохраняю изменения
+        level_instance.save()
+        coords_instance.save()
+        images_instance.save()
+        instance.save()
         return Response(response)
