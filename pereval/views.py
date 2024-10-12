@@ -19,10 +19,19 @@ class submitData(viewsets.ModelViewSet):
             return Response('Отправлено успешно', status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    # Технически это не нужно по заданию, но поскольку наш patch это по сути put, я думаю стоит запретить настоящий put
+    def update(self, request, *args, **kwargs):
+        response = {'state': 0, 'message': 'используйте PATCH для изменения данных'}
+        return Response(response)
+
+    # По условию задания этот метод принимает весь json, поэтому можно было бы использовать update,
+    # но по условию задания нам нужно использовать именно patch
     def partial_update(self, request, *args, **kwargs):
         instance = self.get_object()
         # проверка статуса
         if instance.status == 'NE':
+            # "Метод принимает тот же самый json" является условием задания, поэтому нам не нужно проверять
+            # отправлены ли данные или нет
             data = request.data
             user_dict = model_to_dict(instance.user)
             # В дате нету айди юзера, поэтому удаляю его из нашего словаря
