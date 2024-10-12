@@ -31,6 +31,10 @@ class submitData(viewsets.ModelViewSet):
         level_instance = instance.level
         coords_instance = instance.coords
         images_instance = Images.objects.filter(pereval=instance.id)
+        # Удаляем все изображения, ибо это легче чем изменять их
+        # это лучше решение только пока в images.data хранится ссылка или путь к файлу, а не сам файл
+        for image in images_instance:
+            image.delete()
         response = {'state': 1}
 
         # переопределяю поля перевала
@@ -47,13 +51,12 @@ class submitData(viewsets.ModelViewSet):
         coords_instance.latitude = data['coords']['latitude']
         coords_instance.longitude = data['coords']['longitude']
         coords_instance.height = data['coords']['height']
-        # переопределяю фотографии
-
+        # создаю новые фотографии
+        for image_data in data['images']:
+            image = Images(data=image_data['data'], title=image_data['title'], pereval=instance)
+            image.save()
         # Сохраняю изменения
         level_instance.save()
         coords_instance.save()
-        # У нас список, а не объект, поэтому сохраняем их по одному
-        for image in images_instance:
-            image.save()
         instance.save()
         return Response(response)
