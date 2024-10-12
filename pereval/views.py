@@ -39,7 +39,10 @@ class submitData(viewsets.ModelViewSet):
         instance.other_titles = data['other_titles']
         instance.connect = data['connect']
         # переопределяю поля сложности
-
+        level_instance.winter = data['level']['winter']
+        level_instance.summer = data['level']['summer']
+        level_instance.autumn = data['level']['autumn']
+        level_instance.spring = data['level']['spring']
         # переопределяю поля координат
 
         # переопределяю фотографии
@@ -47,6 +50,7 @@ class submitData(viewsets.ModelViewSet):
         # Сохраняю изменения
         level_instance.save()
         coords_instance.save()
-        images_instance.save()
+        for image in images_instance:
+            image.save()
         instance.save()
         return Response(response)
