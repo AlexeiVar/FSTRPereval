@@ -73,3 +73,12 @@ class submitData(viewsets.ModelViewSet):
         else:
             response = {'state': 0, 'message': 'Этот объект не является новым и поэтому не может быть изменен'}
             return Response(response)
+
+    # Делаю возможность поиска по почте через queryset
+    def get_queryset(self):
+        queryset = self.queryset
+        email = self.request.query_params.get('user__email')
+        # Для лучшей читабельности делаю is not None а не просто if
+        if email is not None:
+            pass
+        return queryset
