@@ -77,8 +77,11 @@ class submitData(viewsets.ModelViewSet):
     # Делаю возможность поиска по почте через queryset
     def get_queryset(self):
         queryset = self.queryset
+        # Пытаюсь получить почту из ссылки
         email = self.request.query_params.get('user__email')
         # Для лучшей читабельности делаю is not None а не просто if
         if email is not None:
+            # Если почта есть, то меняю фильтр
             queryset = queryset.filter(user__email=email)
+        # Возвращаю фильтр
         return queryset
