@@ -80,5 +80,5 @@ class submitData(viewsets.ModelViewSet):
         email = self.request.query_params.get('user__email')
         # Для лучшей читабельности делаю is not None а не просто if
         if email is not None:
-            pass
+            queryset = queryset.filter(user__email=email)
         return queryset
