@@ -43,8 +43,6 @@ class submitData(viewsets.ModelViewSet):
                     if not data['user'] == user_dict:
                         response = {'state': 0, 'message': 'данные пользователя нельзя переопределить'}
                         return Response(response)
-
-            coords_instance = instance.coords
             # Если нам прислали изображения, то работаем с ними
             if 'images' in data:
                 images_instance = Images.objects.filter(pereval=instance.id)
@@ -75,12 +73,15 @@ class submitData(viewsets.ModelViewSet):
                     level_instance.__setattr__(season, level_data[season])
                 level_instance.save()
 
-            # переопределяю поля координат
-            coords_instance.latitude = data['coords']['latitude']
-            coords_instance.longitude = data['coords']['longitude']
-            coords_instance.height = data['coords']['height']
+            # Проверяю переданы ли координаты
+            if 'coords' in data:
+                coords_instance = instance.coords
+                coords_data = data['coords']
+                # переопределяю поля координат в цикле по той же логике, что и сложность
+                for coord in coords_data:
+                    coords_instance.__setattr__(coord, coords_data[coord])
+                coords_instance.save()
 
-            coords_instance.save()
             response = {'state': 1}
             return Response(response)
         else:
