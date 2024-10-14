@@ -40,16 +40,6 @@ class submitData(viewsets.ModelViewSet):
                     response = {'state': 0, 'message': 'данные пользователя нельзя переопределить'}
                     return Response(response)
 
-            # Нет смысла получать текущие данные если они не меняются
-            if 'level' in data:
-                level_instance = instance.level
-                # переопределяю поля сложности
-                level_instance.winter = data['level']['winter']
-                level_instance.summer = data['level']['summer']
-                level_instance.autumn = data['level']['autumn']
-                level_instance.spring = data['level']['spring']
-                level_instance.save()
-
             coords_instance = instance.coords
             images_instance = Images.objects.filter(pereval=instance.id)
             # Если нам прислали изображения, то работаем с ними
@@ -61,18 +51,33 @@ class submitData(viewsets.ModelViewSet):
                 for image_data in data['images']:
                     image = Images(data=image_data['data'], title=image_data['title'], pereval=instance)
                     image.save()
-            # переопределяю поля перевала
-            instance.beauty_title = data['beauty_title']
-            instance.title = data['title']
-            instance.other_titles = data['other_titles']
-            instance.connect = data['connect']
+            # переопределяю поля перевала если они меняются, сохранение все равно произойдет
+            if 'beauty_title' in data:
+                instance.beauty_title = data['beauty_title']
+            if 'title' in data:
+                instance.title = data['title']
+            if 'other_titles' in data:
+                instance.other_titles = data['other_titles']
+            if 'connect' in data:
+                instance.connect = data['connect']
+            instance.save()
+            # Смотрю есть ли сложность в присланных данных
+            if 'level' in data:
+                level_instance = instance.level
+                level_data = data['level']
+                # переопределяю поля сложности
+                level_instance.winter = level_data['winter']
+                level_instance.summer = level_data['summer']
+                level_instance.autumn = level_data['autumn']
+                level_instance.spring = level_data['spring']
+                level_instance.save()
+
             # переопределяю поля координат
             coords_instance.latitude = data['coords']['latitude']
             coords_instance.longitude = data['coords']['longitude']
             coords_instance.height = data['coords']['height']
 
             coords_instance.save()
-            instance.save()
             response = {'state': 1}
             return Response(response)
         else:
