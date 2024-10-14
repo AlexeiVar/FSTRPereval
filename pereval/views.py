@@ -45,9 +45,9 @@ class submitData(viewsets.ModelViewSet):
                         return Response(response)
 
             coords_instance = instance.coords
-            images_instance = Images.objects.filter(pereval=instance.id)
             # Если нам прислали изображения, то работаем с ними
             if 'images' in data:
+                images_instance = Images.objects.filter(pereval=instance.id)
                 # Удаляем все изображения, ибо это легче чем изменять их
                 # это лучше решение только пока в images.data хранится ссылка или путь к файлу, а не сам файл
                 for image in images_instance:
