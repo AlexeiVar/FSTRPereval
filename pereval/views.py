@@ -31,14 +31,18 @@ class submitData(viewsets.ModelViewSet):
         # проверка статуса
         if instance.status == 'NE':
             data = request.data
-            # Если передали юзера то проверяю что он не изменен
             if 'user' in data:
-                user_dict = model_to_dict(instance.user)
-                # В дате нету айди юзера, поэтому удаляю его из нашего словаря
-                del user_dict['id']
-                if not data['user'] == user_dict:
-                    response = {'state': 0, 'message': 'данные пользователя нельзя переопределить'}
-                    return Response(response)
+                # Если юзер Null, то пропускаю все
+                if data['user'] is None:
+                    pass
+                else:
+                    # Если передали юзера то проверяю что он не изменен
+                    user_dict = model_to_dict(instance.user)
+                    # В дате нету айди юзера, поэтому удаляю его из нашего словаря
+                    del user_dict['id']
+                    if not data['user'] == user_dict:
+                        response = {'state': 0, 'message': 'данные пользователя нельзя переопределить'}
+                        return Response(response)
 
             coords_instance = instance.coords
             images_instance = Images.objects.filter(pereval=instance.id)
@@ -65,11 +69,10 @@ class submitData(viewsets.ModelViewSet):
             if 'level' in data:
                 level_instance = instance.level
                 level_data = data['level']
-                # переопределяю поля сложности
-                level_instance.winter = level_data['winter']
-                level_instance.summer = level_data['summer']
-                level_instance.autumn = level_data['autumn']
-                level_instance.spring = level_data['spring']
+                # переопределяю поля сложности в цикле
+                for season in level_data:
+                    # Прохожусь по каждому переданному сезону и заменяю уровень сложности
+                    level_instance.__setattr__(season, level_data[season])
                 level_instance.save()
 
             # переопределяю поля координат
