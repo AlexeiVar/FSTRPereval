@@ -30,22 +30,27 @@ class submitData(viewsets.ModelViewSet):
         instance = self.get_object()
         # проверка статуса
         if instance.status == 'NE':
-            # "Метод принимает тот же самый json" является условием задания, поэтому нам не нужно проверять
-            # отправлены ли данные или нет
             data = request.data
-            user_dict = model_to_dict(instance.user)
-            # В дате нету айди юзера, поэтому удаляю его из нашего словаря
-            del user_dict['id']
-            if not data['user'] == user_dict:
-                response = {'state': 0, 'message': 'данные пользователя нельзя переопределить'}
-                return Response(response)
+            # Если передали юзера то проверяю что он не изменен
+            if 'user' in data:
+                user_dict = model_to_dict(instance.user)
+                # В дате нету айди юзера, поэтому удаляю его из нашего словаря
+                del user_dict['id']
+                if not data['user'] == user_dict:
+                    response = {'state': 0, 'message': 'данные пользователя нельзя переопределить'}
+                    return Response(response)
             level_instance = instance.level
             coords_instance = instance.coords
             images_instance = Images.objects.filter(pereval=instance.id)
-            # Удаляем все изображения, ибо это легче чем изменять их
-            # это лучше решение только пока в images.data хранится ссылка или путь к файлу, а не сам файл
-            for image in images_instance:
-                image.delete()
+            # Если нам прислали изображения, то работаем с ними
+            if 'images' in data:
+                # Удаляем все изображения, ибо это легче чем изменять их
+                # это лучше решение только пока в images.data хранится ссылка или путь к файлу, а не сам файл
+                for image in images_instance:
+                    image.delete()
+                for image_data in data['images']:
+                    image = Images(data=image_data['data'], title=image_data['title'], pereval=instance)
+                    image.save()
             # переопределяю поля перевала
             instance.beauty_title = data['beauty_title']
             instance.title = data['title']
@@ -61,9 +66,6 @@ class submitData(viewsets.ModelViewSet):
             coords_instance.longitude = data['coords']['longitude']
             coords_instance.height = data['coords']['height']
             # создаю новые фотографии
-            for image_data in data['images']:
-                image = Images(data=image_data['data'], title=image_data['title'], pereval=instance)
-                image.save()
             # Сохраняю изменения
             level_instance.save()
             coords_instance.save()
