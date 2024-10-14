@@ -39,7 +39,17 @@ class submitData(viewsets.ModelViewSet):
                 if not data['user'] == user_dict:
                     response = {'state': 0, 'message': 'данные пользователя нельзя переопределить'}
                     return Response(response)
-            level_instance = instance.level
+
+            # Нет смысла получать текущие данные если они не меняются
+            if 'level' in data:
+                level_instance = instance.level
+                # переопределяю поля сложности
+                level_instance.winter = data['level']['winter']
+                level_instance.summer = data['level']['summer']
+                level_instance.autumn = data['level']['autumn']
+                level_instance.spring = data['level']['spring']
+                level_instance.save()
+
             coords_instance = instance.coords
             images_instance = Images.objects.filter(pereval=instance.id)
             # Если нам прислали изображения, то работаем с ними
@@ -56,18 +66,11 @@ class submitData(viewsets.ModelViewSet):
             instance.title = data['title']
             instance.other_titles = data['other_titles']
             instance.connect = data['connect']
-            # переопределяю поля сложности
-            level_instance.winter = data['level']['winter']
-            level_instance.summer = data['level']['summer']
-            level_instance.autumn = data['level']['autumn']
-            level_instance.spring = data['level']['spring']
             # переопределяю поля координат
             coords_instance.latitude = data['coords']['latitude']
             coords_instance.longitude = data['coords']['longitude']
             coords_instance.height = data['coords']['height']
-            # создаю новые фотографии
-            # Сохраняю изменения
-            level_instance.save()
+
             coords_instance.save()
             instance.save()
             response = {'state': 1}
