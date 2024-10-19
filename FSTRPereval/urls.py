@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
 from rest_framework.schemas import get_schema_view
+from django.views.generic import TemplateView
 
 from pereval import views
 
@@ -28,5 +29,10 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include(router.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    path('api_schema', get_schema_view(title='Pereval API Schema', description='Schema for API Pereval'))
+    path('api_schema', get_schema_view(title='Pereval API Schema', description='Schema for API Pereval'),
+        name='api_schema'),
+    path('docs/', TemplateView.as_view(
+            template_name='docs.html',
+            extra_context={'schema_url':'api_schema'}
+            ), name='swagger-ui'),
 ]
