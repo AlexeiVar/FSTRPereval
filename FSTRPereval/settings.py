@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # Наружные приложения
     'rest_framework',
+    'rest_framework_swagger',
     # Внутренние приложения
     'pereval',
 ]
