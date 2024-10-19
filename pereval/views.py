@@ -11,6 +11,8 @@ from .models import *
 class submitData(viewsets.ModelViewSet):
     queryset = Pereval.objects.all()
     serializer_class = PerevalSerializer
+    # Более элегантный метод убирания некоторых запросов
+    http_method_names = ['get', 'post', 'list', 'patch']
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -18,11 +20,6 @@ class submitData(viewsets.ModelViewSet):
             serializer.save()
             return Response('Отправлено успешно', status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    # Технически это не нужно по заданию, но поскольку наш patch это по сути put, я думаю стоит запретить настоящий put
-    def update(self, request, *args, **kwargs):
-        response = {'state': 0, 'message': 'используйте PATCH для изменения данных'}
-        return Response(response)
 
     # По условию задания этот метод принимает весь json, поэтому можно было бы использовать update,
     # но по условию задания нам нужно использовать именно patch
