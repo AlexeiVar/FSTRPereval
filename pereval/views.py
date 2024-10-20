@@ -1,7 +1,4 @@
-from django.shortcuts import render
 from rest_framework import viewsets
-from rest_framework import permissions
-from rest_framework import status
 from django.forms.models import model_to_dict
 
 from .serializers import *
