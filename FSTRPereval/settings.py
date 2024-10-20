@@ -81,15 +81,13 @@ WSGI_APPLICATION = 'FSTRPereval.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+
+# Эта ветка использует именно SQlite для pythonanywhere
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'pereval',
-        'USER': os.getenv('FSTR_DB_LOGIN'),
-        'PASSWORD': os.getenv('FSTR_DB_PASS'),
-        'HOST': os.getenv('FSTR_DB_HOST'),
-        'PORT': os.getenv('FSTR_DB_PORT'),
-    },
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
 
 
