@@ -84,7 +84,7 @@ class submitData(viewsets.ModelViewSet):
 
     # Делаю возможность поиска по почте через queryset
     def get_queryset(self):
-        queryset = self.queryset
+        queryset = Pereval.objects.all()
         # Пытаюсь получить почту из ссылки
         email = self.request.query_params.get('user__email')
         # Для лучшей читабельности делаю is not None а не просто if
