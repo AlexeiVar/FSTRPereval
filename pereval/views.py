@@ -15,7 +15,8 @@ class submitData(viewsets.ModelViewSet):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response('Отправлено успешно', status=status.HTTP_200_OK)
+            response = {'message': 'Отправлено успешно', 'id':serializer.data['id']}
+            return Response(response, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     # По условию задания этот метод принимает весь json, поэтому можно было бы использовать update,

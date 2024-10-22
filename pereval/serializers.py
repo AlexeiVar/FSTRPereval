@@ -59,6 +59,7 @@ class PerevalSerializer(WritableNestedModelSerializer):
     class Meta:
         model = Pereval
         fields = [
+            'id',
             'add_time',
             'beauty_title',
             'title',
@@ -70,7 +71,7 @@ class PerevalSerializer(WritableNestedModelSerializer):
             'images',
             'user',
         ]
-        read_only_fields = ['status', 'add_time']
+        read_only_fields = ['status', 'add_time', 'id']
 
     def create(self, validated_data, **kwargs):
         level = validated_data.pop('level')
