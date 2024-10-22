@@ -1,11 +1,12 @@
 from rest_framework.test import APITransactionTestCase
 import json
+from django.core.exceptions import ObjectDoesNotExist
 
-from .models import Pereval
+from .models import Pereval, CustomUser
 
 
 class PerevalTestCase(APITransactionTestCase):
-    # Это понижает скорость тестов, но позволяет делать ресет для АЙДИ в каждом тесте
+    # Это понижает скорость тестов, но позволяет делать ресет для ID в каждом тесте
     reset_sequences = True
 
     def setUp(self):
@@ -13,8 +14,9 @@ class PerevalTestCase(APITransactionTestCase):
         with open('request.json', 'r', encoding="utf8") as file:
             self.data = json.load(file)
 
-    # Тест для создания
-    def test_create(self):
+    # Тест для поста
+    def test_post(self):
+        # Пытаемся создать объект
         response = self.client.post(self.url, self.data)
         # Проверяем что сообщение верно
         self.assertEqual(response.content.decode('utf8'), '{"message":"Отправлено успешно","id":1}')
@@ -27,6 +29,28 @@ class PerevalTestCase(APITransactionTestCase):
         del created['status']
         # Проверяем что объект равен тому что мы передали
         self.assertEqual(created, self.data)
+
+        # Проверяем отсутствие дублирования юзеров
+        self.client.post(self.url, self.data)
+        # Проверяем существование юзера, если его нету то вызовет ошибку
+        with self.assertRaises(ObjectDoesNotExist):
+            CustomUser.objects.get(id=2)
+
+        # Проверим что юзер не создастся если менять не почту
+        test_data = self.data
+        test_data['user']['otc'] = 'Ivanovich'
+        self.client.post(self.url, test_data)
+        # Опять проверяем существование юзера
+        with self.assertRaises(ObjectDoesNotExist):
+            CustomUser.objects.get(id=2)
+
+        # Проверим что создание второго юзера возможно при изменении почты
+        test_data['user']['email'] = 'testdata@mail.ru'
+        self.client.post(self.url, test_data)
+        # Получим второго юзера и проверим что его данные отличаются
+        second = CustomUser.objects.get(id=2)
+        self.assertEqual(second.email, 'testdata@mail.ru')
+        self.assertEqual(second.otc, 'Ivanovich')
 
     # Тесты для патча
     def test_patch(self):
@@ -65,3 +89,6 @@ class PerevalTestCase(APITransactionTestCase):
         response = self.client.get(self.url + '1/')
         changed = json.loads(response.content)
         self.assertNotEqual(changed['beauty_title'], 'far.')
+
+    # Лист не проверяется, ибо он не изменен.
+    # Фильтрование не проверяется, поскольку сделано все встроенными методами.
