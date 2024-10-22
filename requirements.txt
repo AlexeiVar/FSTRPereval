@@ -2,3 +2,7 @@ Django==5.1.1
 djangorestframework==3.15.2
 drf_writable_nested==0.7.0
 python-dotenv==1.0.1
+PyYAML==6.0.2
+uritemplate==4.1.1
+django-rest-swagger==2.2.0
+inflection==0.5.1
