@@ -45,9 +45,7 @@ class ImagesSerializer(serializers.ModelSerializer):
         fields = [
             'data',
             'title',
-            'pereval',
         ]
-        read_only_fields = ['pereval', ]
 
 
 class PerevalSerializer(WritableNestedModelSerializer):
